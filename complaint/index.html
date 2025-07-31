@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Citizen Complaint Portal</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+        
+        .tagline {
+            font-size: 1.1rem;
+            font-weight: 300;
+            margin-top: 5px;
+        }
+        
+        .auth-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 30px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+            background-color: #3498db;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-danger {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        .complaints-list {
+            margin-top: 30px;
+        }
+        
+        .complaint-item {
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: white;
+            border-radius: 0 4px 4px 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .complaint-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .complaint-title {
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+        
+        .complaint-status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .status-submitted {
+            background-color: #f1c40f;
+            color: #333;
+        }
+        
+        .status-in-review {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .status-resolved {
+            background-color: #2ecc71;
+            color: white;
+        }
+        
+        .complaint-meta {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-bottom: 10px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background-color: #2ecc71;
+            color: white;
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 40px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Citizen Complaint Portal</h1>
+            <p class="tagline">Your voice matters. Report issues to government agencies and institutions.</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="auth-section">
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">U</div>
+                <div>
+                    <div id="userName">Guest User</div>
+                    <div id="userEmail">Not logged in</div>
+                </div>
+            </div>
+            <div>
+                <button id="loginBtn" class="btn btn-primary">Login with Gmail</button>
+                <button id="logoutBtn" class="btn btn-danger hidden">Logout</button>
+            </div>
+        </div>
+        
+        <div id="complaintFormSection" class="card hidden">
+            <h2>File a Complaint</h2>
+            <form id="complaintForm">
+                <div class="form-group">
+                    <label for="institution">Institution/Agency</label>
+                    <select id="institution" required>
+                        <option value="">Select Institution</option>
+                        <option value="municipality">Municipality</option>
+                        <option value="police">Police Department</option>
+                        <option value="health">Health Department</option>
+                        <option value="education">Education Department</option>
+                        <option value="transport">Transport Authority</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <select id="category" required>
+                        <option value="">Select Category</option>
+                        <option value="corruption">Corruption</option>
+                        <option value="service">Poor Service</option>
+                        <option value="infrastructure">Infrastructure Issue</option>
+                        <option value="harassment">Harassment</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input type="text" id="title" placeholder="Brief description of the issue" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="description">Detailed Description</label>
+                    <textarea id="description" placeholder="Provide detailed information about your complaint" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="anonymous"> Submit anonymously
+                    </label>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Submit Complaint</button>
+            </form>
+        </div>
+        
+        <div id="complaintsSection" class="complaints-list hidden">
+            <h2>Your Complaints</h2>
+            <div id="complaintsList"></div>
+        </div>
+        
+        <div id="loginPrompt" class="card">
+            <h2>Welcome to the Citizen Complaint Portal</h2>
+            <p>Please log in with your Gmail account to file complaints and track their status.</p>
+            <p>This portal allows you to:</p>
+            <ul>
+                <li>File complaints against government agencies and institutions</li>
+                <li>Track the status of your complaints</li>
+                <li>Receive updates on resolution progress</li>
+                <li>Submit complaints anonymously if preferred</li>
+            </ul>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 Citizen Complaint Portal. All rights reserved.</p>
+            <p>This is a demonstration prototype. In a production environment, all data would be securely stored and processed.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Simulated user data storage
+        let currentUser = null;
+        let complaints = [];
+        
+        // DOM elements
+        const loginBtn = document.getElementById('loginBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const userAvatar = document.getElementById('userAvatar');
+        const userName = document.getElementById('userName');
+        const userEmail = document.getElementById('userEmail');
+        const complaintFormSection = document.getElementById('complaintFormSection');
+        const complaintsSection = document.getElementById('complaintsSection');
+        const loginPrompt = document.getElementById('loginPrompt');
+        const complaintForm = document.getElementById('complaintForm');
+        const complaintsList = document.getElementById('complaintsList');
+        
+        // Initialize the app
+        function init() {
+            // Check if user is already logged in (in a real app, this would check session/cookies)
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                updateUserInterface();
+            }
+            
+            // Load complaints from localStorage
+            const savedComplaints = localStorage.getItem('complaints');
+            if (savedComplaints) {
+                complaints = JSON.parse(savedComplaints);
+            }
+            
+            // Event listeners
+            loginBtn.addEventListener('click', login);
+            logoutBtn.addEventListener('click', logout);
+            complaintForm.addEventListener('submit', submitComplaint);
+        }
+        
+        // Simulate login with Gmail
+        function login() {
+            // In a real app, this would use Google OAuth
+            // For this demo, we'll simulate a login with a fixed user
+            currentUser = {
+                id: 'user123',
+                name: 'John Citizen',
+                email: 'john.citizen@gmail.com'
+            };
+            
+            // Save to localStorage
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            
+            // Update UI
+            updateUserInterface();
+            showNotification('Login successful!');
+        }
+        
+        // Logout function
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            
+            // Update UI
+            userAvatar.textContent = 'U';
+            userName.textContent = 'Guest User';
+            userEmail.textContent = 'Not logged in';
+            loginBtn.classList.remove('hidden');
+            logoutBtn.classList.add('hidden');
+            complaintFormSection.classList.add('hidden');
+            complaintsSection.classList.add('hidden');
+            loginPrompt.classList.remove('hidden');
+            
+            showNotification('You have been logged out');
+        }
+        
+        // Update UI after login
+        function updateUserInterface() {
+            // Update user info
+            userAvatar.textContent = currentUser.name.charAt(0);
+            userName.textContent = currentUser.name;
+            userEmail.textContent = currentUser.email;
+            
+            // Show/hide elements
+            loginBtn.classList.add('hidden');
+            logoutBtn.classList.remove('hidden');
+            complaintFormSection.classList.remove('hidden');
+            complaintsSection.classList.remove('hidden');
+            loginPrompt.classList.add('hidden');
+            
+            // Display user's complaints
+            displayComplaints();
+        }
+        
+        // Submit complaint
+        function submitComplaint(e) {
+            e.preventDefault();
+            
+            const institution = document.getElementById('institution').value;
+            const category = document.getElementById('category').value;
+            const title = document.getElementById('title').value;
+            const description = document.getElementById('description').value;
+            const anonymous = document.getElementById('anonymous').checked;
+            
+            // Create new complaint object
+            const newComplaint = {
+                id: 'comp' + Date.now(),
+                userId: currentUser.id,
+                userName: anonymous ? 'Anonymous' : currentUser.name,
+                institution,
+                category,
+                title,
+                description,
+                status: 'submitted',
+                submittedAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            };
+            
+            // Add to complaints array
+            complaints.push(newComplaint);
+            
+            // Save to localStorage
+            localStorage.setItem('complaints', JSON.stringify(complaints));
+            
+            // Reset form
+            complaintForm.reset();
+            
+            // Update UI
+            displayComplaints();
+            showNotification('Complaint submitted successfully!');
+        }
+        
+        // Display user's complaints
+        function displayComplaints() {
+            // Filter complaints for current user
+            const userComplaints = complaints.filter(c => c.userId === currentUser.id);
+            
+            // Clear list
+            complaintsList.innerHTML = '';
+            
+            if (userComplaints.length === 0) {
+                complaintsList.innerHTML = '<p>You haven\'t submitted any complaints yet.</p>';
+                return;
+            }
+            
+            // Display each complaint
+            userComplaints.forEach(complaint => {
+                const complaintItem = document.createElement('div');
+                complaintItem.className = 'complaint-item';
+                
+                const statusClass = `status-${complaint.status}`;
+                const statusText = complaint.status.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase());
+                
+                complaintItem.innerHTML = `
+                    <div class="complaint-header">
+                        <div class="complaint-title">${complaint.title}</div>
+                        <div class="complaint-status ${statusClass}">${statusText}</div>
+                    </div>
+                    <div class="complaint-meta">
+                        Submitted to: ${complaint.institution} | Category: ${complaint.category} | 
+                        Date: ${new Date(complaint.submittedAt).toLocaleDateString()}
+                    </div>
+                    <div>${complaint.description}</div>
+                `;
+                
+                complaintsList.appendChild(complaintItem);
+            });
+        }
+        
+        // Show notification
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+        
+        // Initialize app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
